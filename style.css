@@ -1,12 +1,12 @@
 /* custom css styling */
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 html,body{
-    background: #007bff;
+    background: #cad6e3;
 }
-::selection{
+/* ::selection{
     color: #fff;
-    background: #007bff;
-}
+    background: #295e92;
+} */
 .container{
     position: absolute;
     top: 50%;
