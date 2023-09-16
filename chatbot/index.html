@@ -30,9 +30,10 @@
         </div>
     </div>
     <script>
+        //js 
         $(document).ready(function(){
             $("#send-btn").on("click", function(){
-                $value = $("#data").val();
+                $value = $("#data").val();  //rtrives data that entered in html element with id store in $value
                 $msg = '<div class="user-inbox inbox"><div class="msg-header"><p>'+ $value +'</p></div></div>';
                 $(".form").append($msg);
                 $("#data").val('');
@@ -40,13 +41,15 @@
                 // start ajax code
                 $.ajax({
                     url: 'message.php',
-                    type: 'POST',
+                    type: 'POST', //send post req to url messsage.php and passses users input as a data 
                     data: 'text='+$value,
                     success: function(result){
-                        $replay = '<div class="bot-inbox inbox"><div class="icon"><i class="fas fa-user"></i></div><div class="msg-header"><p>'+ result +'</p></div></div>';
-                        $(".form").append($replay);
+                        //creates html  message element with servers response & stores in replay variable
+                        $respose = '<div class="bot-inbox inbox"><div class="icon"><i class="fas fa-user"></i></div><div class="msg-header"><p>'+ result +'</p></div></div>';
+                        $(".form").append($respose); 
                         // when chat goes down the scroll bar automatically comes to the bottom
                         $(".form").scrollTop($(".form")[0].scrollHeight);
+                        
                     }
                 });
             });
