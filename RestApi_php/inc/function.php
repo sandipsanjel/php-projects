@@ -1,36 +1,81 @@
-<?php 
+<?php
 require '../inc/dbcon.php';
-function getChatList(){
+
+function error422($message)
+{
+    $data = [
+        'status' => 422,
+        'message' => $message,
+    ];
+    header("HTTP/1.0 422 unprocessable Entity");
+    echo  json_encode($data);
+    exit();
+}
+function storeChat($inputchat)
+{
     global $conn;
-    $query ="SELECT *FROM chat";
+
+    $queries = mysqli_real_escape_string($conn, $inputchat['queries']);
+    $replies = mysqli_real_escape_string($conn, $inputchat['replies']);
+
+    if (empty(trim($queries))) {
+
+        return error422('Enter your queries');
+    } elseif (empty(trim($replies))) {
+
+        return error422('Enter your replies');
+    } else {
+        $query = "INSERT INTO chat (queries,replies) VALUES ('$queries','$replies')";
+        $result = mysqli_query($conn, $query);
+    
+        if ($result) {
+            $data = [
+                'status' => 201,
+                'message' => 'Chat Added to db successfully',
+            ];
+            header('HTTP/1.1 201 Created');
+            return json_encode($data);
+        } else {
+            $data = [
+                'status' => 500,
+                'message' => 'Internal server Error',
+            ];
+            header("HTTP/1.1 500 Internal server Error");
+            return json_encode($data);
+        }
+    }
+    }
+
+
+
+function getChatList()
+{
+    global $conn;
+    $query = "SELECT *FROM Chat";
     $query_run = mysqli_query($conn, $query);
 
 
-if ($query_run){
-    if (mysqli_num_rows($query_run) >0){
-$res=mysqli_fetch_all($query_run ,MYSQLI_ASSOC);
-$data=[
-    'status '=>200,
-    'meaaage'=>'users data fetched seccessfully',
-    'data'=>$res,
-];
-    }else 
-    $data = [
-        'status'=> 400,
-        'message'=>'no chat ',
-    ];
-    header("http/1.0 400 internal server error");
-   return  json_encode($data);
+    if ($query_run) {
+        if (mysqli_num_rows($query_run) > 0) {
+            $res = mysqli_fetch_all($query_run, MYSQLI_ASSOC);
+            $data = [
+                'status ' => 200,
+                'meaaage' => 'users data fetched seccessfully',
+                'data' => $res,
+            ];
+        } else
+            $data = [
+                'status' => 400,
+                'message' => 'no chat ',
+            ];
+        header("http/1.0 400 internal server error");
+        return  json_encode($data);
+    } else {
+        $data = [
+            'status' => 500,
+            'message' => 'internal sever error',
+        ];
+        header("http/1.0 400 internal server error");
+        return  json_encode($data);
+    }
 }
-
-else
-{
-    $data = [
-        'status'=> 500,
-        'message'=>'internal sever error',
-    ];
-    header("http/1.0 400 internal server error");
-  return  json_encode($data);
-}
-}
-?>
