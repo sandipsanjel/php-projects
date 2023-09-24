@@ -15,7 +15,7 @@ function storeChat($inputchat)
 {
     global $conn;
 
-    $queries = mysqli_real_escape_string($conn, $inputchat['queries']);
+    $queries = mysqli_real_escape_string($conn, $inputchat['queries']); //what ever data is passing from post method inputchat is passing to database 
     $replies = mysqli_real_escape_string($conn, $inputchat['replies']);
 
     if (empty(trim($queries))) {
@@ -23,17 +23,17 @@ function storeChat($inputchat)
         return error422('Enter your queries');
     } elseif (empty(trim($replies))) {
 
-        return error422('Enter your replies');
+        return error422('Enter your replies'); //422 is input validation
     } else {
-        $query = "INSERT INTO chat (queries,replies) VALUES ('$queries','$replies')";
+        $query = "INSERT INTO chat (queries,replies) VALUES ('$queries','$replies')"; //to store the data in db 
         $result = mysqli_query($conn, $query);
-    
+
         if ($result) {
             $data = [
-                'status' => 201,
+                'status' => 200, //201 smt is created or inserted 
                 'message' => 'Chat Added to db successfully',
             ];
-            header('HTTP/1.1 201 Created');
+            header('HTTP/1.1 200 Created');
             return json_encode($data);
         } else {
             $data = [
@@ -44,7 +44,7 @@ function storeChat($inputchat)
             return json_encode($data);
         }
     }
-    }
+}
 
 
 
@@ -77,5 +77,33 @@ function getChatList()
         ];
         header("http/1.0 400 internal server error");
         return  json_encode($data);
+    }
+}
+function deleteChat($chatparameter)
+{
+    global $conn;
+    if (!isset($chatparameter['id'])) {
+        return error422('chat is not found in url');
+    } elseif ($chatparameter['id'] == null) {
+        return error422('Enter the chat id');
+    }
+    $chatId = mysqli_real_escape_string($conn, $chatparameter['id']);
+    $query = "DELETE FROM chat WHERE id='$chatId' LIMIT 1";
+    $result = mysqli_query($conn, $query);
+
+    if ($result) {
+        $data = [
+            'status' => 200, //201 smt is created or inserted 
+            'message' => 'Chat deleted successfully',
+        ];
+        header('HTTP/1.1 200 Deleted');
+        return json_encode($data);
+    } else {
+        $data = [
+            'status' => 400,
+            'message' => 'chat not found',
+        ];
+        header("HTTP/1.1 400 not found");
+        return json_encode($data);
     }
 }
