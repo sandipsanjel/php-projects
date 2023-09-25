@@ -30,10 +30,10 @@ function storeChat($inputchat)
 
         if ($result) {
             $data = [
-                'status' => 200, //201 smt is created or inserted 
+                'status' => 201, //201 smt is created or inserted 
                 'message' => 'Chat Added to db successfully',
             ];
-            header('HTTP/1.1 200 Created');
+            header('HTTP/1.1 201 Created');
             return json_encode($data);
         } else {
             $data = [
@@ -105,5 +105,46 @@ function deleteChat($chatparameter)
         ];
         header("HTTP/1.1 400 not found");
         return json_encode($data);
+    }
+}
+
+function updatechat($inputchat, $chatparams)
+{
+    global $conn;
+//input validation 
+    if (!isset($chatparams['id'])) {
+        return error422('chat id not found in url');
+    } elseif ($chatparams['id']==null) {
+        return error422('Enter your chat id');
+    }
+    $chatId = mysqli_real_escape_string($conn, $inputchat['id']); //data sanitization to prevent sql injection
+    $queries = mysqli_real_escape_string($conn, $inputchat['queries']); //what ever data is passing from post method inputchat is passing to database 
+    $replies = mysqli_real_escape_string($conn, $inputchat['replies']);
+
+    if (empty(trim($queries))) { //to check if queries are empty or not after white sapce trim
+
+        return error422('Enter your queries');
+    } elseif (empty(trim($replies))) {
+
+        return error422('Enter your replies'); //422 is input validation
+    } else {
+        $query = "UPDATE chat  SET queries='$queries',replies='$replies'  WHERE id='$chatId' LIMIT 1";//to update the data in db  it insures that only 1 data update at a time
+        $result = mysqli_query($conn, $query);
+
+        if ($result) {
+            $data = [
+                'status' => 200, //201 smt is created or inserted 
+                'message' => 'Chat Updated to db successfully',
+            ];
+            header('HTTP/1.1 200 Updated');
+            return json_encode($data);
+        } else {
+            $data = [
+                'status' => 500,
+                'message' => 'Internal server Error',
+            ];
+            header("HTTP/1.1 500 Internal server Error");
+            return json_encode($data);
+        }
     }
 }
