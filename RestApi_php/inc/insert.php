@@ -1,7 +1,7 @@
 <?php
 
 error_reporting(0);
-
+// PHP code are used to set HTTP response headers, particularly related to Cross-Origin Resource Sharing (CORS)
 header('Access-Control_Allow_Origin:*');
 header('Content_type:application/json');
 header('Access-Control_Allow_Metthod:POST');
@@ -14,7 +14,7 @@ $requestMethod = $_SERVER["REQUEST_METHOD"];
 
 if ($requestMethod == 'POST') {
 
-    $inputData = json_decode(file_get_contents("php://input"), true); //while we are not using  json 
+    $inputData = json_decode(file_get_contents("php://input"), true); // reads the raw JSON data from the request body. and decodes the raw json data into into associative array
     if (empty($inputData)) {
 
         $storeChat = storeChat($_POST); //this method is for the form input data
