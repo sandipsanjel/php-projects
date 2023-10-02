@@ -9,7 +9,7 @@ if (mysqli_num_rows($result) > 0) {
 ?>
         <div class="card mb-4">
             <div class="card-body">
-                <p><?php echo $row['msg']; ?></p>
+                <p><?php echo $row['cmt']; ?></p>
                 <div class="d-flex justify-content-between">
                     <div class="d-flex flex-row align-items-center">
                         <img src="https://i.imgur.com/RpzrMR2.jpg" alt="avatar" width="25" height="25" />
